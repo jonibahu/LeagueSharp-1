@@ -642,8 +642,6 @@ namespace GagongSyndra
 
         private static float GetIgniteDamage(Obj_AI_Hero enemy)
         {
-            if (IgniteSlot == SpellSlot.Unknown || Player.SummonerSpellbook.CanUseSpell(IgniteSlot) != SpellState.Ready) return 0f;
-            return (float)Player.GetSummonerSpellDamage(enemy, Damage.SummonerSpell.Ignite);
         }
 
         private static bool DFGBuff(Obj_AI_Hero enemy)
@@ -735,8 +733,6 @@ namespace GagongSyndra
                     bool useR = Menu.Item("DontR" + enemy.BaseSkinName) != null && Menu.Item("DontR" + enemy.BaseSkinName).GetValue<bool>() == false;
                     bool Rflash = GetComboDamage(enemy, Menu.Item("UseQKS").GetValue<bool>(), false, Menu.Item("UseEKS").GetValue<bool>(), false, false) < enemy.Health;
                     PredictionOutput ePos = R.GetPrediction(enemy);
-                    if ((FlashSlot != SpellSlot.Unknown || Player.SummonerSpellbook.CanUseSpell(FlashSlot) == SpellState.Ready) && UseFlash
-                        && Player.Distance(ePos.UnitPosition, true) <= Math.Pow(Q.Range + 25f + 395, 2) && Player.Distance(ePos.UnitPosition, true) > Math.Pow(Q.Range + 25f + 200, 2))
 
                     if ((GetComboDamage(enemy, Menu.Item("UseQKS").GetValue<bool>(), false, Menu.Item("UseEKS").GetValue<bool>(), false, false) > enemy.Health && Menu.Item("UseFK1").GetValue<bool>())
                         || (GetComboDamage(enemy, false, false, false, Menu.Item("UseRKS").GetValue<bool>()) > enemy.Health && Menu.Item("UseFK2").GetValue<bool>() && Player.Distance(ePos.UnitPosition, true) <= Math.Pow(R.Range + 390, 2) && Environment.TickCount - R.LastCastAttemptT > Game.Ping + 750 && Environment.TickCount - QE.LastCastAttemptT > Game.Ping + 750 && Player.Distance(ePos.UnitPosition, true) > Math.Pow(R.Range + 200, 2)))
@@ -760,7 +756,6 @@ namespace GagongSyndra
                                     { 
                                         if (useR)
                                         {   //Use Ult after flash if can't be killed by QE
-                                            Player.SummonerSpellbook.CastSpell(FlashSlot, FlashPos);
                                             UseSpells(false, //Q
                                             false, //W
                                             false, //E
@@ -772,7 +767,6 @@ namespace GagongSyndra
                                     }
                                     else
                                     {   //Q & E after flash
-                                        Player.SummonerSpellbook.CastSpell(FlashSlot, FlashPos);
                                     }
                                 FlashLastCast = Environment.TickCount;
                                 }
@@ -840,14 +834,7 @@ namespace GagongSyndra
                         }
                             
                     }
-                    //Ignite
-                    if (Player.Distance(enemy, true) <= 600 * 600 && GetIgniteDamage(enemy) > enemy.Health)
-                        if (Menu.Item("IgniteALLCD").GetValue<bool>())
-                        {
-                            if (!Q.IsReady() && !W.IsReady() && !E.IsReady() && !R.IsReady() && Environment.TickCount - R.LastCastAttemptT > Game.Ping + 750 && Environment.TickCount - QE.LastCastAttemptT > Game.Ping + 750 && Environment.TickCount - W.LastCastAttemptT > Game.Ping + 750) Player.SummonerSpellbook.CastSpell(IgniteSlot, enemy);
-                        }
-                        else Player.SummonerSpellbook.CastSpell(IgniteSlot, enemy);
-                }
+
             
             //Use QE
             if (UQE && detectCollision(QETarget) && QETarget != null && Q.IsReady() && (E.IsReady() || (Player.Spellbook.GetSpell(SpellSlot.E).CooldownExpires - Game.Time < 1 && Player.Spellbook.GetSpell(SpellSlot.E).Level > 0)) && Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost + Player.Spellbook.GetSpell(SpellSlot.E).ManaCost <= Player.Mana)
